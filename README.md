@@ -32,3 +32,10 @@ This library takes one clear position on each ambiguous question:
 - Empty header, `None`, or a non-string value yield an empty token list and `None` for the direct address.
 - Tokens are trimmed of surrounding ASCII whitespace; empty tokens are dropped; duplicates are preserved (the chain can legitimately repeat an address).
 - `X-Forwarded-For` is sometimes sent as multiple header lines. This library does not collapse them — you must join the values yourself before constructing `XForwardedForChain`, because the ordering semantics of multiple headers is deployment-specific and I will not guess it.
+
+## Performance
+
+The window keeps a bounded buffer, so `push` is constant time and memory does not
+grow with the length of the stream. `peak` and `trough` are linear in the window
+size, which is the trade that keeps `push` cheap.
+
